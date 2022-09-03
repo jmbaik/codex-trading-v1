@@ -10,6 +10,7 @@ from util.db_helper import *
 from util.db import *
 import pandas as pd
 import pymysql
+from pykrx import stock as krx
 
 
 class Kiwoom2(QAxWidget):
@@ -38,6 +39,12 @@ class Kiwoom2(QAxWidget):
         self.screen_condition = '6000'
         self.screen_meme_tr_stock = '7000'
         self.screen_meme_real_stock = '8000'
+        # 오늘 workday 아니면 실행하지 않음
+        _today = datetime.today().strftime('%Y%m%d')
+        _workday = krx.get_nearest_business_day_in_a_week(_today)
+        if _today > _workday:
+            print('today {0} is not {1}'.format(_today, _workday))
+            sys.exit()
 
         # ocx 인스턴스 생성
         self.get_ocx_instance()
